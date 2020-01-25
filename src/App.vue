@@ -1,32 +1,69 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div>
+        <app-header></app-header>
+        <div class="container-fluid">
+            <app-loader v-if="link && notes.length === 0"></app-loader>
+            <transition name="slide" mode="out-in">
+                <router-view></router-view>
+            </transition>
+            <app-loader v-if="link && link !== 'Loading Notes'"></app-loader>
+            <!-- <app-loader v-if="link === 'Loading new Note'"></app-loader> -->
+        </div>
     </div>
-    <router-view/>
-  </div>
 </template>
+<script>
+import Header from './components/Header.vue'
+import { mapState} from 'vuex'
+import Loader from './components/Loader.vue'
+export default {
+    computed: {
+        ...mapState(['link', 'notes'])
+    },
+    
+    components: {
+    appHeader: Header,
+    appLoader: Loader
+    },
+
+    //try to auto log user when app reloads
+    created(){
+      this.$store.dispatch('tryAutoLogin')
+    }
+}
+</script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+ body {
+    background-color: #4AAE9B;
 }
+ .slide-enter-active {
+        animation: slide-in 200ms ease-out forwards
 
-#nav {
-  padding: 30px;
-}
+    }
+    .slide-leave-active {
+        animation: slide-out 200ms ease-out forwards
+    }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+    @keyframes slide-in {
+        from {
+            transform: translateX(-30px);
+            opacity: 0
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1
+        }
+    }
+    @keyframes slide-out {
+        from {
+            transform: translateX(0);
+            opacity: 1
+        }
+        to {
+            transform: translateX(-30px);
+            opacity: 0;
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+        }
+    }
+
 </style>
