@@ -4,7 +4,7 @@
         <h3 style="text-align:center; color:#4AAE9B;">Log In</h3>
       <form @submit.prevent="onSubmit">
         <div class="input">
-          <label for="email">Mail</label>
+          <label for="email">Email</label>
           <input
                   type="email"
                   id="email"
@@ -52,10 +52,10 @@ export default {
 <style scoped>
 .signin-form {
     background-color: #f8f9fa;
-    width: 400px;
-    margin: 30px auto;
+    max-width: 30rem;
+    margin: 1rem auto;
     border: 1px solid #eee;
-    padding: 20px;
+    padding: 1rem;
     box-shadow:5px 5px 5px 0px black;
     border-radius: 5%;
   }

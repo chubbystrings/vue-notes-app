@@ -63,10 +63,10 @@ export default {
 </script>
 <style scoped>
   .signup-form {
-    width: 400px;
-    margin: 30px auto;
+     max-width: 30rem;
+    margin: 1rem auto;
     border: 1px solid #eee;
-    padding: 20px;
+    padding: 1rem;
     box-shadow:5px 5px 5px 0px black;
     border-radius: 5%;
     background-color: #f8f9fa

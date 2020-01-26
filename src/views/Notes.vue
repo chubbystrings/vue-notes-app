@@ -8,8 +8,8 @@
     <app-modal v-if="modalView" ></app-modal>
     
     <transition name="fade" appear mode="out-in">
-      <div class="col-md-6 offset-5"> 
-        <h4 v-if="notes.length === 0" >No Notes Yet!!</h4>
+      <div class="noNotes"> 
+        <h4 style="text-align: center" v-if="notes.length === 0" >No Notes Yet!!</h4>
       </div>
     </transition>
     
@@ -90,6 +90,10 @@ export default {
 
 .flip-move {
   transition: transform 2s
+}
+
+.noNotes {
+  margin: 1rem auto
 }
 
 

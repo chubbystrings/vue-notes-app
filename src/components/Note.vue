@@ -4,13 +4,13 @@
     <div :style="{backgroundColor: note.color}" class=" quote mb-3" @click="radomColor(note.id)">
 
       <small class="float-left">card: {{ changedColor ? changedColor : note.color}}</small>
-      <span id="deleteBtn" @click="deleteNote(note.id)" class="float-right">X</span>
+      <button id="deleteBtn" @click="deleteNote(note.id)" class="float-right">X</button>
       <br>
 
       <p>{{note.message}}</p>
 
       <br> 
-      <span @click="viewModal(note.id)" id="editBtn" class="float-right">Edit</span >
+      <button @click="viewModal(note.id)" id="editBtn" class="float-right">Edit</button >
 
     </div>
   </div> 
@@ -65,20 +65,31 @@ export default {
       color: black;
       cursor: pointer;
       box-shadow: 5px 5px 5px 0px black;
-      height: 15rem;
+      max-height: 15rem;
       box-sizing: border-box;
       padding: 0.5rem;
       background-color: #f8f9fa;
-      transition: background-color .5s ease-out  
+      transition: background-color .5s ease-out;
+      z-index: -1; 
     }
    
     #editBtn {
-        position: absolute;
-        right: 1.3rem;
-        bottom: 1rem
+      position: absolute;
+      right: 1.3rem;
+      bottom: 1rem;
+      background-color: transparent;
+      outline: none;
+      border: none;
     }
 
-     .fade-enter,
+    #deleteBtn {
+      background-color: transparent;
+      outline: none;
+      
+
+    }
+
+    .fade-enter,
   .fade-leave-active {
     opacity: 0;
   }

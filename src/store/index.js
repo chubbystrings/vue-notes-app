@@ -19,7 +19,8 @@ export default new Vuex.Store({
     currentEdit: {
       id: null,
       message: ''
-    }
+    },
+    isNavOpen: false
 
   },
 
@@ -38,6 +39,10 @@ export default new Vuex.Store({
       state.userId = null  
       state.notes = []
       state.link = ''
+    },
+
+    toggleNav(state) {
+      state.isNavOpen = !state.isNavOpen
     },
 
     /** NOTE MUTATIONS ******************************************* */
@@ -132,6 +137,10 @@ export default new Vuex.Store({
       setTimeout(() => {
         commit('clearAuthData')
       }, expirationTime * 1000)
+    },
+
+    toggleNavBar({commit}){
+      commit('toggleNav')
     },
 
     //for sing up functionality
@@ -355,6 +364,10 @@ export default new Vuex.Store({
     //get the current card edit state
     getCurrentEdit(state){
       return state.currentEdit
+    },
+
+    navBar(state){
+      return state.isNavOpen
     }
 
   }
