@@ -43,7 +43,7 @@
                   <em class="error" v-if="$v.confirmPassword.$error">Password Mismatch</em>
             </div>
             <div class="submit">
-                <button :disabled="$v.$anyError" type="submit" >Submit</button>
+                <button :disabled="$v.$anyError || !confirmPassword" type="submit" >Submit</button>
             </div>
         </form>
     </div>
@@ -117,6 +117,7 @@ export default {
         minLen: minLength(6)
       },
       confirmPassword: {
+        required,
         sameAs: sameAs(vm => {
           return vm.password
         })
