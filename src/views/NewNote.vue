@@ -2,7 +2,7 @@
     <div class="row">
         <div class="text-form">
             <div>
-            <textarea placeholder="Write short Note" rows="10" cols="40"  v-model="message" class=" textDiv" maxlength="200">
+            <textarea placeholder="Write short Note" rows="10" cols="40"  v-model="message" class=" textDiv" maxlength="100">
 
             </textarea> 
             

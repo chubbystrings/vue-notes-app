@@ -2,13 +2,18 @@
  <div id="signup">
     <div class="signup-form">
         <h3 style="text-align:center; color:#4AAE9B;">Sign Up Form</h3>
+        <em class="error" v-if="error === 'Unauthorized'">email already exist</em>
       <form @submit.prevent="onSubmit">
             <div class="input">
                 <label for="email">Email</label>
                 <input
-                        type="email"
-                        id="email"
-                        v-model="email">
+                    type="email"
+                    id="email"
+                    @blur="$v.email.$touch()"
+                    v-model="email"
+                    :class="{inputError: $v.email.$error}"
+                    >
+                    <em v-if="$v.email.$error" class="error">please enter a valid email</em>       
             </div>
             
             
@@ -17,17 +22,28 @@
                 <input
                     type="password"
                     id="password"
-                    v-model="password">
+                    :class="{inputError: $v.password.$error}"
+                    @blur="$v.password.$touch()"
+                    :disabled="$v.email.$invalid || $v.email.$error"
+                    v-model="password"
+                >
+                <em v-if="$v.password.$error" class="error">password length should be above {{$v.password.$params.minLen.min}}</em>
             </div>
+
             <div class="input">
                 <label for="confirm-password">Confirm Password</label>
                 <input
                   type="password"
+                  :class="{inputError: $v.confirmPassword.$error}"
                   id="confirm-password"
+                  @input="$v.confirmPassword.$touch()"
+                  :disabled="$v.email.$invalid || $v.email.$error"
                   v-model="confirmPassword">
+
+                  <em class="error" v-if="$v.confirmPassword.$error">Password Mismatch</em>
             </div>
             <div class="submit">
-                <button :disabled="btnMsg" type="submit" >Submit</button>
+                <button :disabled="$v.$anyError" type="submit" >Submit</button>
             </div>
         </form>
     </div>
@@ -35,13 +51,15 @@
     
 </template>
 <script>
+import globalAxios from 'axios'
+import store from '../store/index'
+import {required, email, numeric, sameAs, minValue, minLength, requiredUnless} from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
       email: '',
       password: '',
       confirmPassword: '',
-      btnMsg: false
     }
   },
   methods: {
@@ -51,12 +69,60 @@ export default {
           password: this.password,
           confirmPassword: this.confirmPassword,
         }
-        console.log(formData)
+        
         this.btnMsg = true
         this.$store.dispatch('alterLink', 'signup')
         this.$store.dispatch('signup', formData)
 
     }
+  },
+
+  computed: {
+    error(){
+        return store.getters.errorMsg
+      }
+  },
+
+  validations: {
+    email: {
+      required,
+      email,
+      unique: val => {
+          if(val === '' || !/\S+@\S+\.\S+/.test(val)) return true
+          return globalAxios.get('/users.json?orderBy="email"&equalTo="' + val + '"')
+          .then(res => {
+            if(Object.keys(res.data).length === 0){
+              store.dispatch('clearErrorLog')
+              return true
+            }else {
+              const errorMessage = {
+                statusText: 'Unauthorized'
+              }
+              store.dispatch('errorMessage', errorMessage )
+            }
+            
+          })
+          .catch(error => {
+            const errorMessage = {
+              statusText: 'Unknown error'
+            }
+            store.dispatch('errorMessage', errorMessage)
+          })
+          
+        }
+    },
+
+     password: {
+        required,
+        minLen: minLength(6)
+      },
+      confirmPassword: {
+        sameAs: sameAs(vm => {
+          return vm.password
+        })
+      },
+
+
   }
     
 }
@@ -68,8 +134,21 @@ export default {
     border: 1px solid #eee;
     padding: 1rem;
     box-shadow:5px 5px 5px 0px black;
-    border-radius: 5%;
+    border-radius: 10px;
     background-color: #f8f9fa
+  }
+
+  .signup-form .submit {
+    text-align: right;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .inputError {
+    background-color: red;
+    transition: background-color 0.5s ease-out
   }
 
   .input {
@@ -92,6 +171,7 @@ export default {
     padding: 6px 12px;
     box-sizing: border-box;
     border: 1px solid #ccc;
+    border-radius: 20px;
   }
 
   .input.inline input {

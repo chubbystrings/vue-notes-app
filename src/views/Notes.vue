@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="cardDiv">
     <app-notes
       v-for="note in notes" 
       :key="note.message" 
@@ -59,6 +59,11 @@ export default {
 }
 </script>
 <style scoped>
+.cardDiv{
+      display:flex;
+      flex-wrap: wrap;
+      
+    }
 
  .fade-enter,
   .fade-leave-active {
@@ -114,6 +119,12 @@ export default {
   }
   to {
     transform: rotateY(90deg)
+  }
+}
+
+@media (max-width: 800px){
+  .cardDiv {
+    margin: 0 auto;
   }
 }
 </style>

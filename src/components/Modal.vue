@@ -61,7 +61,6 @@ import Edit from '../components/EditNote'
                 this.$store.dispatch('closeModal')
             },
             change(value){
-              console.log(value)
               this.update = value
             }
         },
@@ -144,6 +143,13 @@ import Edit from '../components/EditNote'
   .modal-fade-enter-active,
   .modal-fade-leave-active {
     transition: opacity .5s ease
+  }
+
+  @media (max-width: 800px){
+    .modal {
+      height: 43vh;
+      width: 20rem;
+    }
   }
 
 </style>

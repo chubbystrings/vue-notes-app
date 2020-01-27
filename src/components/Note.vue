@@ -1,19 +1,32 @@
 <template>
 
-  <div class="col-xs-6 col-md-4">
-    <div :style="{backgroundColor: note.color}" class=" quote mb-3" @click="radomColor(note.id)">
+<div class="card mb-2" style="width: 20rem;" :style="{backgroundColor: note.color}">
+  <div class="card-title">
+    <small   class=" float-left">{{ changedColor ? changedColor : note.color}}</small>
+    <button  id="colorBtn" @click="radomColor(note.id)" class="float-right ">C</button>
+  </div>
+  <div class="card-body">
+    <p class="card-text">{{note.message}}</p>
+    <button id="editBtn"  @click="viewModal(note.id)">Edit</button>
+    <button  id="closeBtnNote" @click="deleteNote(note.id)" class="btn float-right">X</button>
+  </div>
+</div>
 
+
+  <!-- <div class="col-xs-6 col-md-4">
+    <div :style="{backgroundColor: note.color}" class=" quote mb-3" @click="radomColor(note.id)">
+      
       <small class="float-left">card: {{ changedColor ? changedColor : note.color}}</small>
       <button id="deleteBtn" @click="deleteNote(note.id)" class="float-right">X</button>
       <br>
 
-      <p>{{note.message}}</p>
+      {{note.message}}
 
       <br> 
       <button @click="viewModal(note.id)" id="editBtn" class="float-right">Edit</button >
 
     </div>
-  </div> 
+  </div>  -->
 
 </template>
 
@@ -24,18 +37,24 @@ export default {
     data(){
       return {
         changedColor: '',
-        selectColors: ['white', 'skyblue', 'orangered', 'purple']
+        selectColors: [
+          'white', 'skyblue', 'orangered', 
+          'purple', 
+           'tan','lemon', 'yellow', 'gold', 
+           'orange', 'red', 'orchid', 
+           'azure', 'indigo',  'lime', 'brown', 'chocolate'
+          ]
       }
     },
     props: ['note', 'index'],
     computed: {
       ...mapState(['color'])
+      
     },
     
     methods:{
 
         deleteNote(noteId){
-            console.log(noteId)
             this.$store.dispatch('deleteNote', noteId)
         },
 
@@ -45,7 +64,6 @@ export default {
 
         radomColor(noteId){
           const randNum = Math.floor(Math.random() * this.selectColors.length)
-          console.log(this.selectColors[randNum])
           const newColor = this.selectColors[randNum]
           this.changedColor = newColor
           this.$store.dispatch('changeColor', {
@@ -60,33 +78,42 @@ export default {
 
 <style>
 
-    .quote {
+    .card {
+      display: block;
       font-size: 20px;
       color: black;
       cursor: pointer;
       box-shadow: 5px 5px 5px 0px black;
-      max-height: 15rem;
+      height: 14rem;
       box-sizing: border-box;
       padding: 0.5rem;
       background-color: #f8f9fa;
       transition: background-color .5s ease-out;
-      z-index: -1; 
+      margin-left: 0.5rem;
     }
    
-    #editBtn {
-      position: absolute;
-      right: 1.3rem;
-      bottom: 1rem;
+    #closeBtnNote {
+      position:absolute;
+      right: 0.1rem;
+      bottom: 0.5rem;
       background-color: transparent;
       outline: none;
       border: none;
     }
 
-    #deleteBtn {
+    #colorBtn {
       background-color: transparent;
       outline: none;
-      
+     
+    }
 
+    #editBtn {
+      position:absolute;
+      left: 0.1rem;
+      bottom: 0.5rem;
+      background-color: transparent;
+      outline: none;
+      border: none;
     }
 
     .fade-enter,
@@ -107,6 +134,6 @@ export default {
     transition: transform 1s;
   }
 
-  
+ 
     
 </style>

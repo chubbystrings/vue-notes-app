@@ -50,7 +50,6 @@ export default {
             }
 
             this.$emit('loading', 'upadating please wait..')
-            console.log(this.btnMsg)
             this.$store.dispatch('updateNote', editedNote)
             
         }
@@ -98,5 +97,10 @@ textarea {
     transition: opacity .5s ease
   }
 
+@media (max-width: 800px){
+  textarea {
+    width: 15rem
+  }
+}
    
 </style>

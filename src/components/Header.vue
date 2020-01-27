@@ -20,8 +20,7 @@
                         <button  @click="logout" class="logout nav-link">Logout</button>
                     </li>
                 </ul>
-                
-                
+                  
             </div>
            
         </nav>

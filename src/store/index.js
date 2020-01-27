@@ -20,7 +20,8 @@ export default new Vuex.Store({
       id: null,
       message: ''
     },
-    isNavOpen: false
+    isNavOpen: false,
+    error: ''
 
   },
 
@@ -39,10 +40,19 @@ export default new Vuex.Store({
       state.userId = null  
       state.notes = []
       state.link = ''
+      state.error = ''
+    },
+
+    clearErrorLog(state){
+      state.error = ''
     },
 
     toggleNav(state) {
       state.isNavOpen = !state.isNavOpen
+    },
+
+    ERROR_MSG(state, error){
+      state.error = error.response? error.response.data.error.message : error.statusText
     },
 
     /** NOTE MUTATIONS ******************************************* */
@@ -95,7 +105,7 @@ export default new Vuex.Store({
       }
 
       if(link === 'signup'){
-        state.link = 'hollup while we sign you'
+        state.link = 'hollup calm down'
       }
 
       if(link === 'signedup'){
@@ -132,6 +142,10 @@ export default new Vuex.Store({
   actions: {
 
     /** USER ACTIONS ******************************************* */
+
+    clearErrorLog({commit}){
+      commit('clearErrorLog')
+    },
 
     setLogoutTimer({commit}, expirationTime){
       setTimeout(() => {
@@ -181,7 +195,9 @@ export default new Vuex.Store({
       if(!state.idToken){
         return
       }
-      globalAxios.post('/users.json?auth=' + state.idToken, userData)
+      globalAxios.post('/users.json?auth=' + state.idToken, {
+        email: userData.email
+      })
       .then(res => {})
       .catch(error => {})
     },
@@ -212,10 +228,16 @@ export default new Vuex.Store({
           
       })
       .catch(error => {
+  
+        commit('ERROR_MSG', error)
         commit('EMPTY_LINK')
       })
       
 
+    },
+
+    errorMessage({commit}, error){
+      commit('ERROR_MSG', error)
     },
 
     //authenticate user when APP.vue reloads functionality
@@ -368,6 +390,10 @@ export default new Vuex.Store({
 
     navBar(state){
       return state.isNavOpen
+    },
+
+    errorMsg(state){
+      return state.error
     }
 
   }
@@ -408,7 +434,7 @@ export default new Vuex.Store({
 //       if(confirm('Are you sure you want to remove this note?')){
 //         const foundNote =  state.notes.find(el => el.id == noteId )
 //         if(foundNote){
-//           console.log(foundNote)
+//           
 //           state.notes.splice(state.notes.indexOf(foundNote), 1)
 //         }else{
 //           return false
@@ -422,7 +448,7 @@ export default new Vuex.Store({
 //     OPEN_MODAL_VIEW(state, noteId){
 //       const foundNote = state.notes.find(el => el.id == noteId)
 //       if(foundNote){
-//         console.log(foundNote.id)
+//         
 //         state.currentEdit.id = foundNote.id
 //         state.currentEdit.message = foundNote.message
 //         state.isModalView = true

@@ -2,29 +2,37 @@
   <div id="signin">
     <div class="signin-form">
         <h3 style="text-align:center; color:#4AAE9B;">Log In</h3>
+        <em class="error" v-if="error == 'INVALID_PASSWORD' || error =='EMAIL_NOT_FOUND'">invalid email or password!!</em>
       <form @submit.prevent="onSubmit">
         <div class="input">
           <label for="email">Email</label>
           <input
                   type="email"
-                  id="email"
-                  v-model="email">
+                  id="email" 
+                  @blur="$v.email.$touch()"
+                  v-model="email"
+                  :class="{inputError: $v.$error}"
+                  >
+           <em v-if="$v.$error" class="error">please enter a valid email</em>       
         </div>
         <div class="input">
           <label for="password">Password</label>
           <input
                   type="password"
                   id="password"
-                  v-model="password">
+                  v-model="password"
+                  :disabled="!$v.email.email || !email"
+                  >
         </div>
         <div class="submit">
-          <button :disabled="btnMsg" type="submit">Submit</button>
+          <button :disabled="$v.$anyError || !password"  type="submit">Submit</button>
         </div>
       </form>
     </div>
   </div>
 </template>
 <script>
+import {required, email, numeric, sameAs, minValue, minLength, requiredUnless} from 'vuelidate/lib/validators'
 export default {
     
     data () {
@@ -34,18 +42,31 @@ export default {
         btnMsg: false
       }
     },
+    computed:{
+      error(){
+        this.btnMsg = false
+        return this.$store.getters.errorMsg
+      }
+    },
     methods: {
       onSubmit () {
         const formData = {
           email: this.email,
           password: this.password,
         }
-        console.log(formData)
-          this.$store.dispatch('alterLink', 'signin')
-          this.btnMsg = true
+        
+        this.$store.dispatch('alterLink', 'signin')
          this.$store.dispatch('login', {email: formData.email, password: formData.password})
+         this.password = ''
       }
-    }
+    },
+
+    validations: {
+      email:{
+        required,
+        email
+      }
+    },
     
 }
 </script>
@@ -57,11 +78,25 @@ export default {
     border: 1px solid #eee;
     padding: 1rem;
     box-shadow:5px 5px 5px 0px black;
-    border-radius: 5%;
+    border-radius: 10px;
+  }
+
+  .signin-form .submit {
+    text-align: right;
+  }
+
+  .error {
+    color: red;
   }
 
   .input {
+    
     margin: 10px auto;
+  }
+
+  .inputError {
+    background-color: red;
+    transition: background-color 0.5s ease-out
   }
 
   .input label {
@@ -76,6 +111,7 @@ export default {
     padding: 6px 12px;
     box-sizing: border-box;
     border: 1px solid #ccc;
+    border-radius: 20px;
   }
 
   .input input:focus {
